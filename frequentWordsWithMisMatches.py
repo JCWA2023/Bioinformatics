@@ -1,8 +1,7 @@
 import math
 import numpy as np
 
-# Write your FrequentWordsWithMismatches() function here, along with any subroutines you need.
-# Your function should return a list.
+# takes in dna strand, k = length of pattern and d = number of mismatches allowed
 def FrequentWordsWithMismatches(dna, k, d) : 
     dna = dna.replace("\n","")
     #define the array with each equal to 0
@@ -20,9 +19,8 @@ def FrequentWordsWithMismatches(dna, k, d) :
             freq_map[num] = freq_map.get(num) + 1   
     return mostFrequent(freq_map, k)
 
-
-def mostFrequent(freq_arr, k) :
-    
+#returns the most frequent k-mers in our frequency array
+def mostFrequent(freq_arr, k) :    
     max = 0
     most_freq = []
     for key in freq_arr :
@@ -35,41 +33,35 @@ def mostFrequent(freq_arr, k) :
             
     return most_freq
 
-def NumberToPattern(index, num_bases) :
-    
-    order = {0 : 'A' , 1 : 'C' , 2 : 'G' , 3 : 'T'}
-    
+#converts an index to its assocaited DNA pattern
+def NumberToPattern(index, num_bases) :    
+    order = {0 : 'A' , 1 : 'C' , 2 : 'G' , 3 : 'T'}    
     pattern = ""
     
-    for i in range(num_bases) : 
-        
-        power = 4 ** (num_bases-i-1)
-        
+    for i in range(num_bases) :         
+        power = 4 ** (num_bases-i-1)        
         temp = math.floor(index / power)
-
-        pattern += str(order.get(temp))
-        
+        pattern += str(order.get(temp))        
         index = index - (power * temp)
     return pattern
 
-def patternToNumber (pattern) :
-    
-    index = 0
-    
-    order = {'A' : 0 , 'C' : 1 , 'G' : 2 , 'T' : 3}
-    
+
+#converts a DNA pattern to its lexographic index
+def patternToNumber (pattern) :    
+    index = 0    
+    order = {'A' : 0 , 'C' : 1 , 'G' : 2 , 'T' : 3}    
     i = len(pattern) #the position we are in the pattern
-    
     #scan through the pattern  
     for base in pattern :
         index = index + int(order.get(base)) * (4**(i-1))
-        i = i -1
-    
+        i = i -1    
     return index
 
-def neighbors(pattern, k):
+
+#finds all of the neighbors (caused by mismatches) of a DNA pattern with up to d mismatches
+def neighbors(pattern, d):
     close = [pattern]
-    for i in range(k) :
+    for i in range(d) :
         #loop through what is in close
         res = []
         for pat in close :
@@ -80,7 +72,8 @@ def neighbors(pattern, k):
     close = np.unique(close)
     return close
 
-        
+
+#returns all the DNA neighbors possible due to one base change
 def changeOne(sub): 
     replace = {'A' :['T','C','G'],'T' :['A','C','G'], 'G' :['A','C','T'] ,'C' :['A','T','G'] }
     res = []
